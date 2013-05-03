@@ -62,6 +62,11 @@ module JasperRails
   ByteArrayInputStream        = Rjb::import 'java.io.ByteArrayInputStream'
   JavaString                  = Rjb::import 'java.lang.String'
   JFreeChart                  = Rjb::import 'org.jfree.chart.JFreeChart'
+  # SQL Connections
+  Connection                  = Rjb::import 'java.sql.Connection'
+  DriverManager               = Rjb::import 'java.sql.DriverManager'
+  SQLException                = Rjb::import 'java.sql.SQLException'
+
 
   # Default report params
   self.config = {
@@ -99,19 +104,24 @@ module JasperRails
           end
 
           # Fill the report
-          if datasource
-            input_source = InputSource.new
-            input_source.setCharacterStream(StringReader.new(datasource.to_xml(options).to_s))
-            data_document = silence_warnings do
-              # This is here to avoid the "already initialized constant DOCUMENT_POSITION_*" warnings.
-              JRXmlUtils._invoke('parse', 'Lorg.xml.sax.InputSource;', input_source)
-            end
+          #if datasource
+          #  input_source = InputSource.new
+          #  input_source.setCharacterStream(StringReader.new(datasource.to_xml(options).to_s))
+          #  data_document = silence_warnings do
+          #    # This is here to avoid the "already initialized constant DOCUMENT_POSITION_*" warnings.
+          #    JRXmlUtils._invoke('parse', 'Lorg.xml.sax.InputSource;', input_source)
+          #  end
 
-            jasper_params.put(JRXPathQueryExecuterFactory.PARAMETER_XML_DATA_DOCUMENT, data_document)
-            jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params)
-          else
-            jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, JREmptyDataSource.new)
-          end
+          #  jasper_params.put(JRXPathQueryExecuterFactory.PARAMETER_XML_DATA_DOCUMENT, data_document)
+          #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params)
+          #else
+          #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, JREmptyDataSource.new)
+          #end
+          #
+          connection = Connection.new
+          Rjb::Class.forName("org.sqlite.JDBC")
+          connection = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
+          jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, connection)
 
           # Export it!
           JasperExportManager._invoke('exportReportToPdf', 'Lnet.sf.jasperreports.engine.JasperPrint;', jasper_print)
