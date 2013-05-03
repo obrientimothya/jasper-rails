@@ -122,6 +122,7 @@ module JasperRails
           Rjb::Class.forName("org.sqlite.JDBC")
           connection = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
           jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, connection)
+          connection.close
 
           # Export it!
           JasperExportManager._invoke('exportReportToPdf', 'Lnet.sf.jasperreports.engine.JasperPrint;', jasper_print)
