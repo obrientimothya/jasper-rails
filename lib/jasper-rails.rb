@@ -118,8 +118,8 @@ module JasperRails
           #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, JREmptyDataSource.new)
           #end
           #
-          Rjb::Class.forName("org.sqlite.JDBC")
-          Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
+          DriverManager.registerDriver("org.sqlite.JDBC")
+          connection = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
           jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, connection)
           connection.close
 
