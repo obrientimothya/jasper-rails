@@ -44,7 +44,7 @@ module JasperRails
     classpath << File::PATH_SEPARATOR + File.expand_path(jar)
   end
 
-  Rjb::load( classpath, ['-Djava.awt.headless=true','-Xms128M', '-Xmx256M'] )
+  Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] )
 
   Locale                      = Rjb::import 'java.util.Locale'
   JRException                 = Rjb::import 'net.sf.jasperreports.engine.JRException'
@@ -63,10 +63,18 @@ module JasperRails
   JavaString                  = Rjb::import 'java.lang.String'
   JFreeChart                  = Rjb::import 'org.jfree.chart.JFreeChart'
   # SQL Connections
-  Connection                  = Rjb::import 'java.sql.Connection'
+  JavaSystem                  = Rjb::import 'java.lang.System'
   DriverManager               = Rjb::import 'java.sql.DriverManager'
   SQLException                = Rjb::import 'java.sql.SQLException'
+  Connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
 
+  #statement = Connection.createStatement();
+  #rs = statement.executeQuery("select * from people");
+  #while rs.next()
+  #  puts rs.getString("id")
+  #end
+  #puts Connection._classname
+  #exit
 
   # Default report params
   self.config = {
@@ -118,11 +126,7 @@ module JasperRails
           #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, JREmptyDataSource.new)
           #end
           #
-          Rjb::Class.forName("org.sqlite.JDBC").newInstance()
-          connection = Connection.new
-          connection = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
-          jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, connection)
-          connection.close
+          jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, datasource)
 
           # Export it!
           JasperExportManager._invoke('exportReportToPdf', 'Lnet.sf.jasperreports.engine.JasperPrint;', jasper_print)
@@ -160,7 +164,8 @@ module JasperRails
         params[v.to_s[1..-1]] = controller.instance_variable_get(v)
       end
 
-      controller.send_data Jasper::Rails::render_pdf(jasper_file, resource, params, options), :type => Mime::PDF
+      #controller.send_data Jasper::Rails::render_pdf(jasper_file, resource, params, options), :type => Mime::PDF
+      controller.send_data Jasper::Rails::render_pdf(jasper_file, Connection, params, options), :type => Mime::PDF
     end
   end
 
