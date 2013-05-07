@@ -110,10 +110,10 @@ module JasperRails
 
       def self.render_pdf(jasper_file, datasource, parameters, options)
 
-        if Rails.env.development?
+        if ENV['RAILS_ENV'] == 'development'
           Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] ) unless Rjb::loaded?
         end
-        if Rails.env.production?
+        if ENV['RAILS_ENV'] == 'production'
           # Hack for Amazon Linux
           #ENV['JAVA_HOME'] = "/usr/lib/jvm/java"
           #ENV['LD_LIBRARY_PATH'] = "/usr/lib:/usr/lib/jvm/java/jre/lib/amd64:/usr/lib/jvm/java/jre/lib/amd64/server"
@@ -141,10 +141,10 @@ module JasperRails
         javaSystem                  = Rjb::import 'java.lang.System'
         driverManager               = Rjb::import 'java.sql.DriverManager'
         sqlException                = Rjb::import 'java.sql.SQLException'
-        if Rails.env.development?
+        if ENV['RAILS_ENV'] == 'development'
           connection                = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
         end
-        if Rails.env.production?
+        if ENV['RAILS_ENV'] == 'production'
           connection                = DriverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
         end
 
