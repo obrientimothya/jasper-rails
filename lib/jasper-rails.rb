@@ -197,7 +197,7 @@ module JasperRails
           #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, JREmptyDataSource.new)
           #end
           #
-          jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, connection)
+          jasper_print = jasperFillManager.fillReport(jasper_file, jasper_params, connection)
 
           # Export it!
           jasperExportManager._invoke('exportReportToPdf', 'Lnet.sf.jasperreports.engine.JasperPrint;', jasper_print)
