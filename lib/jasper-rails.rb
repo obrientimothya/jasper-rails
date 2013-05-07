@@ -45,13 +45,13 @@ module JasperRails
   end
 
   if Rails.env.development?
-    Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] )
+    Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] ) unless Rjb::loaded?
   end
   if Rails.env.production?
     # Hack for Amazon Linux
-    ENV['JAVA_HOME'] = "/usr/lib/jvm/java"
-    ENV['LD_LIBRARY_PATH'] = "/usr/lib:/usr/lib/jvm/java/jre/lib/amd64:/usr/lib/jvm/java/jre/lib/amd64/server"
-    Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=com.mysql.jdbc.Driver','-Xms128M', '-Xmx256M'] )
+    #ENV['JAVA_HOME'] = "/usr/lib/jvm/java"
+    #ENV['LD_LIBRARY_PATH'] = "/usr/lib:/usr/lib/jvm/java/jre/lib/amd64:/usr/lib/jvm/java/jre/lib/amd64/server"
+    Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=com.mysql.jdbc.Driver','-Xms128M', '-Xmx256M'] ) unless Rjb::loaded?
   end
 
 
@@ -75,6 +75,7 @@ module JasperRails
   JavaSystem                  = Rjb::import 'java.lang.System'
   DriverManager               = Rjb::import 'java.sql.DriverManager'
   SQLException                = Rjb::import 'java.sql.SQLException'
+
   if Rails.env.development?
     Connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
   end
@@ -171,7 +172,9 @@ module JasperRails
 
   class ActionController::Responder
     def to_pdf
-      jasper_file = "#{Rails.root.to_s}/app/views/#{controller.controller_path}/#{controller.action_name}.jasper"
+      #jasper_file = "#{Rails.root.to_s}/app/views/#{controller.controller_path}/#{controller.action_name}.jasper"
+      jasper_file =  (@options[:template] && "#{Rails.root.to_s}/app/views/#{controller.controller_path}/#{@options[:template]}") ||
+          "#{Rails.root.to_s}/app/views/#{controller.controller_path}/#{controller.action_name}.jasper"
 
       params = {}
       controller.instance_variables.each do |v|
@@ -179,7 +182,7 @@ module JasperRails
       end
 
       #controller.send_data Jasper::Rails::render_pdf(jasper_file, resource, params, options), :type => Mime::PDF
-      controller.send_data Jasper::Rails::render_pdf(jasper_file, Connection, params, options), :type => Mime::PDF
+      controller.send_data Jasper::Rails::render_pdf(jasper_file, Connection, params, options), :type => Mime::PDF, :disposition => 'inline'
     end
   end
 
