@@ -48,6 +48,9 @@ module JasperRails
     Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] )
   end
   if Rails.env.production?
+    # Hack for Amazon Linux
+    ENV['JAVA_HOME'] = "/usr/lib/jvm/java"
+    ENV['LD_LIBRARY_PATH'] = "/usr/lib:/usr/lib/jvm/java/jre/lib/amd64:/usr/lib/jvm/java/jre/lib/amd64/server"
     Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=com.mysql.jdbc.Driver','-Xms128M', '-Xmx256M'] )
   end
 
