@@ -44,7 +44,13 @@ module JasperRails
     classpath << File::PATH_SEPARATOR + File.expand_path(jar)
   end
 
-  Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] )
+  if Rails.env.development?
+    Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] )
+  end
+  if Rails.env.production?
+    Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=com.mysql.jdbc.Driver','-Xms128M', '-Xmx256M'] )
+  end
+
 
   Locale                      = Rjb::import 'java.util.Locale'
   JRException                 = Rjb::import 'net.sf.jasperreports.engine.JRException'
@@ -66,7 +72,12 @@ module JasperRails
   JavaSystem                  = Rjb::import 'java.lang.System'
   DriverManager               = Rjb::import 'java.sql.DriverManager'
   SQLException                = Rjb::import 'java.sql.SQLException'
-  Connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
+  if Rails.env.development?
+    Connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
+  end
+  if Rails.env.production?
+    Connection                  = DriverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
+  end
 
   #statement = Connection.createStatement();
   #rs = statement.executeQuery("select * from people");
