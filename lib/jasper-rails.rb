@@ -158,8 +158,8 @@ module JasperRails
           # Default report params
           config = {
             :report_params=>{
-              "REPORT_LOCALE"    => Locale.new('en', 'US'),
-              "XML_LOCALE"       => Locale.new('en', 'US'),
+              "REPORT_LOCALE"    => locale.new('en', 'US'),
+              "XML_LOCALE"       => locale.new('en', 'US'),
               "XML_DATE_PATTERN" => 'yyyy-MM-dd'
             }
           }
