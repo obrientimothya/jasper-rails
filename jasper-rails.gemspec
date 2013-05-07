@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "jasper-rails/version"
 
 Gem::Specification.new do |s|
-  s.name        = "jasper-rails"
+  s.name        = "obrientimothya-jasper-rails"
   s.version     = JasperRails::VERSION
   s.authors     = ["Marlus Saraiva", "Rodrigo Maia"]
   s.summary     = %q{Rails and JasperReports integration}
