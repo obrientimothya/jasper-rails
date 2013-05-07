@@ -5,11 +5,11 @@ require "jasper-rails/version"
 Gem::Specification.new do |s|
   s.name        = "obrientimothya-jasper-rails"
   s.version     = JasperRails::VERSION
-  s.authors     = ["Marlus Saraiva", "Rodrigo Maia"]
-  s.summary     = %q{Rails and JasperReports integration}
-  s.description = %q{Generate pdf reports on Rails using Jasper Reports reporting tool}
-  s.email       = "rodrigomaia@grupofortes.com.br"
-  s.homepage    = "https://github.com/fortesinformatica/jasper-rails"
+  s.authors     = ["Marlus Saraiva", "Rodrigo Maia", "Timothy OBrien"]
+  s.summary     = %q{Custom Rails-Jaspersoft Tool}
+  s.description = %q{A FORK of the fortesinformatica/jasper-rails project for a particular project. NOT intended for wide use.}
+  s.email       = "obrien.timothy.a@gmail.com"
+  s.homepage    = "https://github.com/obrientimothya/jasper-rails"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
