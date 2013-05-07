@@ -77,10 +77,10 @@ module JasperRails
   SQLException                = Rjb::import 'java.sql.SQLException'
 
   if Rails.env.development?
-    Connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
+    connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
   end
   if Rails.env.production?
-    Connection                  = DriverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
+    connection                  = DriverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
   end
 
   #statement = Connection.createStatement();
@@ -182,7 +182,7 @@ module JasperRails
       end
 
       #controller.send_data Jasper::Rails::render_pdf(jasper_file, resource, params, options), :type => Mime::PDF
-      controller.send_data Jasper::Rails::render_pdf(jasper_file, Connection, params, options), :type => Mime::PDF, :disposition => 'inline'
+      controller.send_data Jasper::Rails::render_pdf(jasper_file, connection, params, options), :type => Mime::PDF, :disposition => 'inline'
     end
   end
 
