@@ -35,64 +35,6 @@ module JasperRails
     attr_accessor :config
   end
 
- #classpath = '.'
- #Dir["#{File.dirname(__FILE__)}/java/*.jar"].each do |jar|
- #  classpath << File::PATH_SEPARATOR + File.expand_path(jar)
- #end
-
- #Dir["lib/*.jar"].each do |jar|
- #  classpath << File::PATH_SEPARATOR + File.expand_path(jar)
- #end
-
- #if Rails.env.development?
- #  Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=org.sqlite.JDBC','-Xms128M', '-Xmx256M'] ) unless Rjb::loaded?
- #end
- #if Rails.env.production?
- #  # Hack for Amazon Linux
- #  #ENV['JAVA_HOME'] = "/usr/lib/jvm/java"
- #  #ENV['LD_LIBRARY_PATH'] = "/usr/lib:/usr/lib/jvm/java/jre/lib/amd64:/usr/lib/jvm/java/jre/lib/amd64/server"
- #  Rjb::load( classpath, ['-Djava.awt.headless=true', '-Djdbc.drivers=com.mysql.jdbc.Driver','-Xms128M', '-Xmx256M'] ) unless Rjb::loaded?
- #end
-
-
- #Locale                      = Rjb::import 'java.util.Locale'
- #JRException                 = Rjb::import 'net.sf.jasperreports.engine.JRException'
- #JasperCompileManager        = Rjb::import 'net.sf.jasperreports.engine.JasperCompileManager'
- #JasperExportManager         = Rjb::import 'net.sf.jasperreports.engine.JasperExportManager'
- #JasperFillManager           = Rjb::import 'net.sf.jasperreports.engine.JasperFillManager'
- #JasperPrint                 = Rjb::import 'net.sf.jasperreports.engine.JasperPrint'
- #JRXmlUtils                  = Rjb::import 'net.sf.jasperreports.engine.util.JRXmlUtils'
- #JREmptyDataSource           = Rjb::import 'net.sf.jasperreports.engine.JREmptyDataSource'
- ## This is here to avoid the "already initialized constant QUERY_EXECUTER_FACTORY_PREFIX" warnings.
- #JRXPathQueryExecuterFactory = silence_warnings{Rjb::import 'net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory'}
- #InputSource                 = Rjb::import 'org.xml.sax.InputSource'
- #StringReader                = Rjb::import 'java.io.StringReader'
- #HashMap                     = Rjb::import 'java.util.HashMap'
- #ByteArrayInputStream        = Rjb::import 'java.io.ByteArrayInputStream'
- #JavaString                  = Rjb::import 'java.lang.String'
- #JFreeChart                  = Rjb::import 'org.jfree.chart.JFreeChart'
- ## SQL Connections
- #JavaSystem                  = Rjb::import 'java.lang.System'
- #DriverManager               = Rjb::import 'java.sql.DriverManager'
- #SQLException                = Rjb::import 'java.sql.SQLException'
-
- #if Rails.env.development?
- #  connection                  = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
- #end
- #if Rails.env.production?
- #  connection                  = DriverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
- #end
-
-
-  # Default report params
- #self.config = {
- #  :report_params=>{
- #    "REPORT_LOCALE"    => Locale.new('en', 'US'),
- #    "XML_LOCALE"       => Locale.new('en', 'US'),
- #    "XML_DATE_PATTERN" => 'yyyy-MM-dd'
- #  }
- #}
-
   module Jasper
     module Rails
       
@@ -182,23 +124,7 @@ module JasperRails
             jasperCompileManager.compileReportToFile(jrxml_file, jasper_file)
           end
 
-          # Fill the report
-          #if datasource
-          #  input_source = InputSource.new
-          #  input_source.setCharacterStream(StringReader.new(datasource.to_xml(options).to_s))
-          #  data_document = silence_warnings do
-          #    # This is here to avoid the "already initialized constant DOCUMENT_POSITION_*" warnings.
-          #    JRXmlUtils._invoke('parse', 'Lorg.xml.sax.InputSource;', input_source)
-          #  end
-
-          #  jasper_params.put(JRXPathQueryExecuterFactory.PARAMETER_XML_DATA_DOCUMENT, data_document)
-          #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params)
-          #else
-          #  jasper_print = JasperFillManager.fillReport(jasper_file, jasper_params, JREmptyDataSource.new)
-          #end
-          #
           jasper_print = jasperFillManager.fillReport(jasper_file, jasper_params, connection)
-
           # Export it!
           jasperExportManager._invoke('exportReportToPdf', 'Lnet.sf.jasperreports.engine.JasperPrint;', jasper_print)
         rescue Exception=>e
