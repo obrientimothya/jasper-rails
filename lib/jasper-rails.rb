@@ -142,10 +142,10 @@ module JasperRails
         driverManager               = Rjb::import 'java.sql.DriverManager'
         sqlException                = Rjb::import 'java.sql.SQLException'
         if ENV['RAILS_ENV'] == 'development'
-          connection                = DriverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
+          connection                = driverManager.getConnection("jdbc:sqlite:/Users/obrientimothya/Dropbox/development/vle/db/development.sqlite3")
         end
         if ENV['RAILS_ENV'] == 'production'
-          connection                = DriverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
+          connection                = driverManager.getConnection("jdbc:mysql://#{ENV['RDS_HOSTNAME']}:#{ENV['RDS_PORT']}/#{ENV['RDS_DB_NAME']}", ENV['RDS_USERNAME'], ENV['RDS_PASSWORD'])
         end
 
 
